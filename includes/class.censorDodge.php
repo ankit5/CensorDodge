@@ -688,12 +688,20 @@ class censorDodge {
             CURLOPT_LOW_SPEED_LIMIT => 5, CURLOPT_LOW_SPEED_TIME => 20,
         ));
 
-       
+           
+// print $rename;
+// exit;
+//         header('Content-Disposition: attachment; filename="'.$rename.'"'); 
 
         curl_setopt($curl, CURLOPT_WRITEFUNCTION, (function ($curl, $p) use (&$body, &$headers, &$shouldStream, $insideOrigin) {
             if (!is_bool($shouldStream)) {
+                //$rename = basename($URL);
+              //  header('Content-Disposition: attachment; filename="'.$rename.'"');
                 $shouldStream = (!preg_match("~(application|text)/~i",$headers["content-type"]) || $headers["content-length"]>5000000) && $insideOrigin; //Check if the file needs to be parsed (stream type, or content length is larger than 5MB)
-                if ($shouldStream) { if (preg_match("~2[0-9]+~i", $headers[0])) { header($headers[0]); } 
+                if ($shouldStream) { 
+                    
+                    if (preg_match("~2[0-9]+~i", $headers[0])) 
+                    { header($headers[0]); } 
                  header("Content-Length: ".$headers["content-length"]);
                 
                  }
@@ -707,19 +715,26 @@ class censorDodge {
 
             return strlen($p);
         }));
-         @preg_match("/.*\.(m3u8|ts|mp4)/", $URL, $matches);
-        if(isset($matches[0])){
-            $rename = basename($matches[0]);
-        }     
-// print $rename;
-// exit;
+        
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, (function ($curl, $hl) use ($URL, &$headers, $insideOrigin) {
             $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type', 'content-language', 'expires', 'pragma', 'accept-ranges', 'content-range');
-            $split = explode(":",$hl,2); $hn = trim(strtolower((count($split)>1 ? $split[0] : count($headers)))); $hv=trim(strtolower($split[(count($split)>1 ? 1 : 0)])); //Split the header into the name and value respectively
+            $headersAdded["content-disposition"] = true;
+           //  header('Content-Disposition: attachment; filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+             header('Content-Disposition: filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+           
+             $split = explode(":",$hl,2); $hn = trim(strtolower((count($split)>1 ? $split[0] : count($headers)))); $hv=trim(strtolower($split[(count($split)>1 ? 1 : 0)])); //Split the header into the name and value respectively
             if (in_array($hn, $allowedHeaders) && $insideOrigin && $curl) { $headers[$hn] = $hv; header($hl); } elseif (!empty(trim($hl))) { $headers[$hn] = $hv; } //Control which headers are set as we receive them from cURL
            
             return strlen($hl);
         }));
+       
+        // curl_setopt($curl, CURLOPT_HEADERFUNCTION, (function ($curl, $hl) use (&$body, $URL, &$headersAdded) {
+        //     $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type',  'content-range',  'content-language',  'expires', 'pragma');
+        //     $headersAdded["content-disposition"] = true; header('Content-Disposition: filename="sdfkf.mp4"'); 
+        //     $hn = strtolower(explode(":",$hl,2)[0]); if (in_array($hn, $allowedHeaders) && $curl) { $headersAdded[$hn] = true; header($hl); } //Control which headers are set as we receive them from cURL
+        //     return strlen($hl);
+        // }));
+       
 
         //Set user agent, referrer, cookies and post parameters based on 'virtual' browser values
         if (!is_null($this->customUserAgent)) { curl_setopt($curl, CURLOPT_USERAGENT, $this->customUserAgent); } else { curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); }
@@ -734,7 +749,7 @@ class censorDodge {
             "HTTP" => curl_getinfo($curl, CURLINFO_HTTP_CODE), "headers" => $headers,
             "error" => curl_error($curl), "page" => $body,
         );
-        header('Content-Disposition: attachment; filename="'.$rename.'"');
+       
         curl_close($curl); //Close cURL connection safely once complete
         return $vars;
     }
