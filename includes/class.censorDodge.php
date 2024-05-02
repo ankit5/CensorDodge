@@ -734,8 +734,8 @@ class censorDodge {
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, (function ($curl, $hl) use ($URL, &$headers, $insideOrigin) {
             $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type', 'content-language', 'expires', 'pragma', 'accept-ranges', 'content-range');
             $headersAdded["content-disposition"] = true;
-           //  header('Content-Disposition: attachment; filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
-             header('Content-Disposition: filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+             header('Content-Disposition: attachment; filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+          //   header('Content-Disposition: filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
            
              $split = explode(":",$hl,2); $hn = trim(strtolower((count($split)>1 ? $split[0] : count($headers)))); $hv=trim(strtolower($split[(count($split)>1 ? 1 : 0)])); //Split the header into the name and value respectively
             if (in_array($hn, $allowedHeaders) && $insideOrigin && $curl) { $headers[$hn] = $hv; header($hl); } elseif (!empty(trim($hl))) { $headers[$hn] = $hv; } //Control which headers are set as we receive them from cURL
