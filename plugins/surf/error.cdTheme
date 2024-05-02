@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title><?php echo ucfirst(strtolower($_SERVER['SERVER_NAME']))." - Censor Dodge ".$proxy->version; ?></title>
+        <title><?php echo ucfirst(strtolower($_SERVER['SERVER_NAME'])); ?></title>
         <link rel="stylesheet" type="text/css" href="<?php echo str_replace(basename($_SERVER["SCRIPT_NAME"]),"",cdURL)."plugins/surf/includes/stylesheet.css"?>">
 	<meta name="viewport" content="width=650">
     </head>
@@ -48,10 +48,10 @@
                 ?>
                 <form action='#' method='GET' onsubmit='goToPage();'>
                     <input id="box" type="text" name='cdURL' value="<?php echo $proxy->getURL(); ?>" placeholder="URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                    <input id="button" type="submit" value="Go!">
+                    <input id="button" type="submit" value="Wacth & Download Video file">
                 </form>
             </div>
-            <div id="options">
+            <div id="options" style="display:none;">
                 <table style="width:100%;">
                     <tr>
                         <td><a onclick="document.getElementById('proxySettings').style.display = 'block';" style="cursor:pointer; color:#000; text-decoration: none;">Proxy Settings</a></td>
@@ -70,6 +70,6 @@
                 </table>
             </div>
         </div>
-        <div id="poweredby">Powered By <a href="http://censordodge.com" target="blank">Censor Dodge V<?php echo $proxy->version; ?></a></div>
+        
     </body>
 </html>
