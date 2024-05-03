@@ -78,7 +78,7 @@ $url = str_replace('&download=force','',$url);
 <script>
 
 $(document).ready(function(){
-  //  $("form #button").trigger("click");
+    $("form #button").trigger("click");
 }); 
 </script>     
     </body>
