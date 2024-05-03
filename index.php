@@ -1,6 +1,16 @@
 <?php
 session_start(); //Start session for settings of proxy to be stored and recovered
+
+if (@$_GET["download"] || @$_GET["force"]) {
+    $_SESSION["force"] =1;
+// print $_GET["cdURL"];
+// exit;
+}else{
+    if (!@$_GET["cdURL"])  $_SESSION["force"] ='';
+}
+
 require("includes/class.censorDodge.php"); //Load censorDodge class
+
 $proxy = new censorDodge(@$_GET["cdURL"], true, true); //Instantiate censorDodge class
 
 //Clear cookies and resetting settings session
@@ -35,12 +45,12 @@ if (@$templates["miniForm"]) { ob_start(); include("".$templates["miniForm"]."")
 
 if (!@$_GET["cdURL"]) { //Only run if no URL has been submitted
     if (!@$templates["home"]) {
-        echo "<html><head><title>".ucfirst(strtolower($_SERVER['SERVER_NAME']))." - Censor Dodge ".$proxy->version."</title><meta name='generator' content='https://www.censordodge.com'></head><body>"; //Basic title
+      //  echo "<html><head><title>".ucfirst(strtolower($_SERVER['SERVER_NAME']))." - Censor Dodge ".$proxy->version."</title><meta name='generator' content='https://www.censordodge.com'></head><body>"; //Basic title
 
         //Basic submission form with base64 encryption support
         echo "
         <script>function goToPage() { event.preventDefault(); var URL = document.getElementsByName('cdURL')[0].value; if (URL!='') { window.location = '?cdURL=' + ".($proxy->encryptURLs ? 'btoa(URL)' : 'URL')."; } }</script>
-        <h2>Welcome to <a target='_blank' style='color:#000 !important;' href='https://www.censordodge.com/'>Censor Dodge ".$proxy->version."</a></h2>
+        
         <form action='#' method='GET' onsubmit='goToPage();'>
             <input type='text' size='30' name='cdURL' placeholder='URL' required>
             <input type='submit' value='Go!'>

@@ -40,6 +40,8 @@
         </div>
 <?php
 $url = str_replace('/?url=','',"$_SERVER[REQUEST_URI]");
+$force = (str_contains($url, 'download=force'))?1:'';
+$url = str_replace('&download=force','',$url);
 ?>
         <div id="container">
            
@@ -49,6 +51,7 @@ $url = str_replace('/?url=','',"$_SERVER[REQUEST_URI]");
                 ?>
                 <form action='#' method='GET' onsubmit='goToPage();'>
                     <input id="box" type="text" name='cdURL' value="<?php echo $url; ?>" placeholder="URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    <input id="force" type="hidden" name='force' value="<?php echo $force; ?>" >
                     <input id="button" type="submit" value="Automatical Start Downloading...">
                 </form>
             </div>
@@ -75,7 +78,7 @@ $url = str_replace('/?url=','',"$_SERVER[REQUEST_URI]");
 <script>
 
 $(document).ready(function(){
-    $("form #button").trigger("click");
+  //  $("form #button").trigger("click");
 }); 
 </script>     
     </body>

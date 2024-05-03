@@ -25,7 +25,7 @@ class censorDodge {
     public $stripJS = false;
     public $stripObjects = false;
     public $customUserAgent = null;
-    public $customReferrer = 'https://minoplres.xyz/';
+    public $customReferrer = null;
 
     //Additional settings that are applied for the page request
     public $curlSettings = array();
@@ -38,7 +38,7 @@ class censorDodge {
         if (!$this->createCookieDIR()) { throw new Exception("You need to have the file writing permissions enabled to use Censor Dodge V".$this->version."!"); } //Populate cookieDIR with directory string, and check for permission but don't create the file yet
         $this->logToFile = $logToFile; //Toggle functions used to log page URLs into files
         $this->hotlinkExceptions = $hotlinkExceptions!==false ? array_merge($this->hotlinkExceptions, is_array($hotlinkExceptions) ? $hotlinkExceptions : array()) : false; //Add domains to allow for hotlinking
-
+        
         //Check that the server meets all the requirements to run proxy sustainably
         if (!(version_compare(PHP_VERSION, $required = "5.1")>=0)) { throw new Exception("You need at least PHP ".$required." to use Censor Dodge V".$this->version."!"); }
         if (!function_exists('curl_init')) { throw new Exception("You need to enable and configure cURL to use Censor Dodge V".$this->version."!"); }
@@ -55,6 +55,7 @@ class censorDodge {
             }
             $this->URL = $this->modifyURL($URL); //Fix any formatting issues with the URL so it is resolvable
         }
+        
 
         $form = "<div id='miniForm' style='z-index: 9999999999; position: fixed; left:15px; top:10px;'><form style='display:inline;' onsubmit='goToPage();' id='miniFormBoxes' action='".cdURL."'><input type='text' autocomplete=\"off\" style='all:initial; background:#fff; border:1px solid #a9a9a9; padding:3px;border-radius:2px;' placeholder='URL' value='' name='cdURL'>
             <input type='submit' style='all:initial; cursor:pointer; margin-left:5px; margin-right:5px; border-radius:2px;background:#fff; border:1px solid #989898; padding:3px; background: linear-gradient(to bottom, #f6f6f6 0%,#dedede 100%);' value='Go!'></form>
@@ -73,8 +74,9 @@ class censorDodge {
                 include("$plugin"); //Load plugin PHP file into script for running later
             }
         }
-
+       
         $this->callAction("onStart", array("",&$this->URL,$this)); //Run onStart function for plugins
+        
         if ($this->blacklistedIPs && preg_match('~('.implode("|", $this->blacklistedIPs).')~', (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']), $i)) { throw new Exception("You are currently not permitted on this server."); }
     }
 
@@ -174,8 +176,9 @@ class censorDodge {
             //Recompile the new proxy URL with anchors if available
             if ($this->encryptURLs) { $URL = base64_encode($URL); } else { $URL = rawurlencode($URL); }
             $URL = cdURL."?".(empty($this->getParam) ? "URL" : $this->getParam)."=".$URL.$anchor;
+            
         }
-
+      
         return $URL; //Return compiled proxy URL
     }
 
@@ -307,6 +310,7 @@ class censorDodge {
                 $hl = substr(md5("cdHotlink"),0,20);
                  if (@$_SESSION[$hl]!=true && !preg_match('~('.implode("|", $this->hotlinkExceptions).')~', $_SERVER["HTTP_REFERER"]))
                   { 
+                   
                     $_SESSION[$hl] = true;
                     // throw new Exception("The use of hotlinking is strictly forbidden on this server!"); 
                 } else { 
@@ -320,12 +324,17 @@ class censorDodge {
 
             if ($this->allowCookies) { $this->createCookieDIR(); } //If cookies are enabled create the directory
             $return = $this->curlRequest($this->URL, $_GET, $_POST); //Run the cURL function to get the page for parsing
-
+            
             $this->HTTP = $return["HTTP"]; $this->responseHeaders = $return["headers"]; //Populate the response information values for plugins
             $contentType = explode(";",$this->responseHeaders["content-type"])[0]; $charset = explode("charset=",$this->responseHeaders["content-type"])[1]; //Store content type and charset for parsing
             if (!$this->HTTP) { throw new Exception("Could not resolve host: ".(($h = parse_url($this->URL,PHP_URL_HOST))!="" ? $h : $this->URL)); } //Check that page was resolved right
             if ($this->blacklistedWebsites && preg_match('~('.implode("|", $this->blacklistedWebsites).')~', $this->URL, $d)) { throw new Exception("Access to ".$d[0]." is not permitted on this server."); }
-            if ($this->URL!=$return["URL"]) { @header("Location: ".$this->proxyURL($return["URL"])); exit; } //Go to new proxy URL if cURL was redirected there
+            if ($this->URL!=$return["URL"])
+             {
+                
+                
+                 @header("Location: ".$this->proxyURL($return["URL"])); 
+                exit; } //Go to new proxy URL if cURL was redirected there
 
             $this->logAction($this->HTTP, $this->URL); //Log URL and HTTP code to file
             if (is_null($return["page"])) { return null; } else { $page .= $return["page"]; $return = null; } //Check that content hasn't already been outputted, so needs parsing
@@ -691,6 +700,9 @@ class censorDodge {
         $curl = curl_init((count($getParameters)>0) ? $URL.(strpos($URL,"?")===false ? "?" : "&").http_build_query($getParameters) : $URL); //Add GET params to base URL
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); //Allow cURL to download the source code
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); //Follow any page redirects provided in headers
+        $proxy = "19.87.193.123:3128";
+		//curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        //curl_setopt($curl, CURLOPT_PROXY, $proxy);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_ENCODING, "gzip, UTF-8, deflate"); //Force encoding to be UTF-8, gzip or deflated
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("Accept:")); //Add a basic Accept header to emulate browser headers
@@ -730,13 +742,16 @@ class censorDodge {
 
             return strlen($p);
         }));
-        
+        // print $_SESSION["force"];
+        // exit;
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, (function ($curl, $hl) use ($URL, &$headers, $insideOrigin) {
             $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type', 'content-language', 'expires', 'pragma', 'accept-ranges', 'content-range');
             $headersAdded["content-disposition"] = true;
-          //   header('Content-Disposition: attachment; filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
-             header('Content-Disposition: filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
-           
+            if($_SESSION['force']==1){
+            header('Content-Disposition: attachment; filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+            }else{
+            header('Content-Disposition: filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+            }
              $split = explode(":",$hl,2); $hn = trim(strtolower((count($split)>1 ? $split[0] : count($headers)))); $hv=trim(strtolower($split[(count($split)>1 ? 1 : 0)])); //Split the header into the name and value respectively
             if (in_array($hn, $allowedHeaders) && $insideOrigin && $curl) { $headers[$hn] = $hv; header($hl); } elseif (!empty(trim($hl))) { $headers[$hn] = $hv; } //Control which headers are set as we receive them from cURL
            
