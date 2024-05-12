@@ -701,10 +701,12 @@ class censorDodge {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); //Allow cURL to download the source code
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); //Follow any page redirects provided in headers
         $proxy = "19.87.193.123:3128";
-        $proxy = "13.200.103.33:8888";
+        $proxy = "13.200.103.33:88882";
         $proxyauth = 'user123:passwordankit123';
 		//curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+       if(str_contains($this->URL, 'rasoutin')){
         curl_setopt($curl, CURLOPT_PROXY, $proxy);
+       }
         curl_setopt($curl, CURLOPT_PROXYUSERPWD, $proxyauth);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_ENCODING, "gzip, UTF-8, deflate"); //Force encoding to be UTF-8, gzip or deflated
