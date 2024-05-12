@@ -706,8 +706,8 @@ class censorDodge {
 		//curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
        if(str_contains($this->URL, 'rasoutin')){
         curl_setopt($curl, CURLOPT_PROXY, $proxy);
-       }
         curl_setopt($curl, CURLOPT_PROXYUSERPWD, $proxyauth);
+       }
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_ENCODING, "gzip, UTF-8, deflate"); //Force encoding to be UTF-8, gzip or deflated
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("Accept:")); //Add a basic Accept header to emulate browser headers
