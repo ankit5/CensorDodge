@@ -56,7 +56,7 @@ class censorDodge {
             $this->URL = $this->modifyURL($URL); //Fix any formatting issues with the URL so it is resolvable
         }
         
-
+        
         $form = "<div id='miniForm' style='z-index: 9999999999; position: fixed; left:15px; top:10px;'><form style='display:inline;' onsubmit='goToPage();' id='miniFormBoxes' action='".cdURL."'><input type='text' autocomplete=\"off\" style='all:initial; background:#fff; border:1px solid #a9a9a9; padding:3px;border-radius:2px;' placeholder='URL' value='' name='cdURL'>
             <input type='submit' style='all:initial; cursor:pointer; margin-left:5px; margin-right:5px; border-radius:2px;background:#fff; border:1px solid #989898; padding:3px; background: linear-gradient(to bottom, #f6f6f6 0%,#dedede 100%);' value='Go!'></form>
             <span id='toggle' style='all:initial; cursor:pointer; display:none; background:#fff; border:1px solid #ccc; border-radius:7px; padding:5px 10px 5px 10px;' onclick=\"var box = document.getElementById('miniFormBoxes'); if (box.style.display=='none') { box.style.display = 'inline'; this.innerHTML = 'X'; } else { box.style.display = 'none'; this.innerHTML = '+'; }\">+</span></div>";
@@ -87,7 +87,7 @@ class censorDodge {
             //If message isn't empty output it to screen, the script will be terminated automatically
             if (!empty($message)) { echo $message; return true; }
         }
-
+        
         return false;
     }
 
@@ -324,7 +324,7 @@ class censorDodge {
 
             if ($this->allowCookies) { $this->createCookieDIR(); } //If cookies are enabled create the directory
             $return = $this->curlRequest($this->URL, $_GET, $_POST); //Run the cURL function to get the page for parsing
-            
+           
             $this->HTTP = $return["HTTP"]; $this->responseHeaders = $return["headers"]; //Populate the response information values for plugins
             $contentType = explode(";",$this->responseHeaders["content-type"])[0]; $charset = explode("charset=",$this->responseHeaders["content-type"])[1]; //Store content type and charset for parsing
             if (!$this->HTTP) { throw new Exception("Could not resolve host: ".(($h = parse_url($this->URL,PHP_URL_HOST))!="" ? $h : $this->URL)); } //Check that page was resolved right
@@ -427,9 +427,9 @@ class censorDodge {
                                 if ($element->tagName=="embed" || $element->tagName=="source" || $element->tagName=="video") {
                                     if ($element->getAttribute("src")!="") {
                                         $moddedURL = $this->proxyURL($this->modifyURL($element->getAttribute("src")));
-                                        $element->setAttribute("src", $moddedURL); //Set src attribute of video elements
+                                        $element->setAttribute("src", 'bjkkj'); //Set src attribute of video elements
                                     }
-                                    if ($element->getAttribute("poster")!="") { $element->setAttribute("poster", $this->proxyURL($this->modifyURL($element->getAttribute("poster")))); } //Modify the poster attribute if needed
+                                    if ($element->getAttribute("poster") =="") { $element->setAttribute("poster", "https:/dad/df.jpg"); } //Modify the poster attribute if needed
                                 }
                                 elseif($element->tagName=="object") {
                                     if ($element->getAttribute("data")!="") {
@@ -605,7 +605,7 @@ class censorDodge {
             "application/*" => array("pdf","zip","xml","rss","xhtml"),
             "font/*" => array("ttf","otf","woff","woff2","eot"),
             "image/*" => array("jpeg","jpg","gif","png","svg"),
-            "video/*" => array("3gp","mreg","mpg","mpe","mp3"),
+            "video/*" => array("3gp","mreg","mpg","mpe","mp3","mp4"),
             "application/json" => "json",
             "URL" => array("a[c-gilmoq-uwxz]","arpa","asia","b[abd-jm-or-twyz]","biz","c[acdf-ik-oru-z]","cat","com","coop","d[ejkmoz]","e[cegr-u]","edu","f[i-kmor]","g[ad-il-np-uwy]",
                 "gov","h[kmnrtu]","icu","i[del-oq-t]","info","int","j[emop]","jobs","k[eg-imnprwyz]","l[a-cikr-vy]","m[ac-eghk-z]","mil","mobi","museum","n[ace-gilopruz]",
@@ -748,10 +748,12 @@ class censorDodge {
             $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type', 'content-language', 'expires', 'pragma', 'accept-ranges', 'content-range');
             $headersAdded["content-disposition"] = true;
             if($_SESSION['force']==1){
-            header('Content-Disposition: attachment; filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
+            header('Content-Disposition: attachment; filename="'.str_replace("Prmovies","Hdmovies2",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
             }else{
-            header('Content-Disposition: filename="'.pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME).'"'); 
-            }
+                
+            header('Content-Disposition: filename="'.str_replace("Prmovies","Hdmovies2",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
+          
+        }
              $split = explode(":",$hl,2); $hn = trim(strtolower((count($split)>1 ? $split[0] : count($headers)))); $hv=trim(strtolower($split[(count($split)>1 ? 1 : 0)])); //Split the header into the name and value respectively
             if (in_array($hn, $allowedHeaders) && $insideOrigin && $curl) { $headers[$hn] = $hv; header($hl); } elseif (!empty(trim($hl))) { $headers[$hn] = $hv; } //Control which headers are set as we receive them from cURL
            
