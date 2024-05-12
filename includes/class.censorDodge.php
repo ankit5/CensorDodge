@@ -700,8 +700,8 @@ class censorDodge {
         $curl = curl_init((count($getParameters)>0) ? $URL.(strpos($URL,"?")===false ? "?" : "&").http_build_query($getParameters) : $URL); //Add GET params to base URL
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); //Allow cURL to download the source code
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); //Follow any page redirects provided in headers
-        $proxy = "19.87.193.123:3128";
-        $proxy = "13.200.103.33:8888";
+        $proxy = "185.217.136.67:1337";
+       // $proxy = "13.200.103.33:8888";
         $proxyauth = 'user123:passwordankit123';
 		//curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
        if(str_contains($this->URL, 'rasoutin')){
