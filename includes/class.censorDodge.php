@@ -753,7 +753,7 @@ class censorDodge {
             $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type', 'content-language', 'expires', 'pragma', 'accept-ranges', 'content-range');
             $headersAdded["content-disposition"] = true;
             if($_SESSION['force']==1){
-            header('Content-Disposition: attachment; filename="'.str_replace("Prmovies","Hdmovies2",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
+            header('Content-Disposition: attachment; filename="'.str_replace("Prmovies","",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
             }else{
                 
             header('Content-Disposition: filename="'.str_replace("Prmovies","",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
