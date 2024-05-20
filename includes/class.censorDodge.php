@@ -756,7 +756,7 @@ class censorDodge {
             header('Content-Disposition: attachment; filename="'.str_replace("Prmovies","Hdmovies2",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
             }else{
                 
-            header('Content-Disposition: filename="'.str_replace("Prmovies","Hdmovies2",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
+            header('Content-Disposition: filename="'.str_replace("Prmovies","",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
           
         }
              $split = explode(":",$hl,2); $hn = trim(strtolower((count($split)>1 ? $split[0] : count($headers)))); $hv=trim(strtolower($split[(count($split)>1 ? 1 : 0)])); //Split the header into the name and value respectively
