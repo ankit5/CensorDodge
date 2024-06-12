@@ -41,7 +41,7 @@
 <?php
 $url = str_replace('/?url=','',"$_SERVER[REQUEST_URI]");
 $force = (str_contains($url, 'download=force'))?1:'';
-$url = str_replace('&download=force','',$url);
+//$url = str_replace('&download=force','',$url);
 ?>
         <div id="container">
            

@@ -700,17 +700,39 @@ class censorDodge {
         $curl = curl_init((count($getParameters)>0) ? $URL.(strpos($URL,"?")===false ? "?" : "&").http_build_query($getParameters) : $URL); //Add GET params to base URL
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); //Allow cURL to download the source code
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); //Follow any page redirects provided in headers
-        $proxy = "185.217.136.67:1337";
-        $proxy = "13.200.103.33:8888";
+        $array[] = "185.217.136.67:1337";
+      //  $array[] = "51.145.176.250:8080";
+       // $array[] = "31.186.241.8:8888";
+       // $array[] = '37.187.109.70:10111';
+        $array[] = '178.48.68.61:18080';
+        $array[] = '64.112.184.89:3128';
+     $proxy = $array[array_rand($array, 1)];
+     
         $proxyauth = 'user123:passwordankit123';
 		//curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
        if(str_contains($this->URL, 'rasoutin')){
+          $ch = file_get_contents("https://cron.123hdmovies2.xyz/getrandomproxy.php");
+          $getData = json_decode($ch);
+          $pro = strtolower($getData->protocol);
+          $proxy = $pro."://".$getData->ip.":".$getData->port;
+         //  print $proxy;
+         //  exit;
+        //  $proxy = "178.48.68.61:18080";
         curl_setopt($curl, CURLOPT_PROXY, $proxy);
-        curl_setopt($curl, CURLOPT_PROXYUSERPWD, $proxyauth);
+      //  curl_setopt($curl, CURLOPT_PROXYUSERPWD, $proxyauth);
        }
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_ENCODING, "gzip, UTF-8, deflate"); //Force encoding to be UTF-8, gzip or deflated
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Accept:")); //Add a basic Accept header to emulate browser headers
+      // curl_setopt($curl, CURLOPT_HTTPHEADER, array("Accept:")); //Add a basic Accept header to emulate browser headers
+      $ip = $_SERVER['REMOTE_ADDR'];
+      curl_setopt($curl, CURLOPT_HTTPHEADER , array(
+        'Referer: https://minoplres.xyz/',
+        'Origin: https://minoplres.xyz',
+        'Accept: */*',
+        'Host: minoplres.xyz',
+        'Connection: keep-alive',
+        'X-Forwarded-For: $ip'
+    ));
         curl_setopt($curl, CURLOPT_NOPROGRESS, true); //Save memory and processing power by disabling calls to unused progress callbacks
         curl_setopt($curl, CURLOPT_RANGE, isset($_SERVER['HTTP_RANGE']) ? substr($_SERVER['HTTP_RANGE'], 6) : null);
 
@@ -752,7 +774,7 @@ class censorDodge {
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, (function ($curl, $hl) use ($URL, &$headers, $insideOrigin) {
             $allowedHeaders = array('content-disposition', 'last-modified', 'cache-control', 'content-type', 'content-language', 'expires', 'pragma', 'accept-ranges', 'content-range');
             $headersAdded["content-disposition"] = true;
-            if($_SESSION['force']==1){
+            if(str_contains($this->URL, 'download=force')){
             header('Content-Disposition: attachment; filename="'.str_replace("Prmovies","",pathinfo(explode("?",$this->URL)[0],PATHINFO_BASENAME)).'"'); 
             }else{
                 
